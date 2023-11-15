@@ -1,0 +1,59 @@
+@Library('mylibrary')_
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('ContDownload_ma')
+        {
+            steps
+            {
+                script
+                {
+                   cicd.gitDownload("maven") 
+                }
+            }
+        }
+        stage('ContBuild_ma')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.build()
+                }
+            }
+        }
+        stage('deploy_ma')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.tomcatdeploy("DeclarativePipelinewithshared","172.31.5.188","matestapp")
+                }
+            }
+        }
+        stage('Testing_ma')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.gitDownload('FunctionalTesting')
+                    cicd.runselenium('DeclarativePipelinewithshared')
+                }
+            }
+        }
+                stage('delivery_ma')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.tomcatdeploy("DeclarativePipelinewithshared","172.31.5.151","maprodapp")
+                }
+            }
+        }
+    }
+}
